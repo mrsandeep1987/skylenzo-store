@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useStore } from "@/store/useStore";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -46,9 +46,18 @@ export default function CheckoutPage() {
     router.push("/thank-you");
   };
 
+  useEffect(() => {
+    if (cart.length === 0) {
+      router.push("/cart");
+    }
+  }, [cart.length, router]);
+
   if (cart.length === 0) {
-    router.push("/cart");
-    return null;
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <p className="text-muted-foreground font-medium">Redirecting to cart...</p>
+      </div>
+    );
   }
 
   return (

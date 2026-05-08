@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, Suspense } from "react";
 import FilterSidebar from "@/components/shop/FilterSidebar";
 import ProductCard from "@/components/products/ProductCard";
 import { products } from "@/data/products";
@@ -9,7 +9,7 @@ import { SlidersHorizontal, X } from "@/components/ui/Icons";
 
 import { useSearchParams } from "next/navigation";
 
-export default function ShopPage() {
+function ShopContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category") || "All";
   
@@ -167,5 +167,13 @@ export default function ShopPage() {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<div className="container-custom py-24"><p className="text-muted-foreground">Loading shop...</p></div>}>
+      <ShopContent />
+    </Suspense>
   );
 }

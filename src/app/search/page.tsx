@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { products } from "@/data/products";
 import ProductCard from "@/components/products/ProductCard";
 import { Search as SearchIcon, Frown } from "@/components/ui/Icons";
 
-export default function SearchPage() {
+function SearchContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
   
@@ -75,5 +75,13 @@ export default function SearchPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div className="container-custom py-24"><p className="text-muted-foreground">Searching...</p></div>}>
+      <SearchContent />
+    </Suspense>
   );
 }
