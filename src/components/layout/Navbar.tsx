@@ -20,6 +20,11 @@ const Navbar = () => {
   
   const cartItemsCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
+  // Only use transparent/white-text style on the homepage
+  const isHomePage = pathname === "/";
+  // Use transparent hero style only when on home AND not yet scrolled
+  const isTransparent = isHomePage && !isScrolled;
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -46,7 +51,7 @@ const Navbar = () => {
       <nav 
         className={cn(
           "transition-all duration-500 border-b border-transparent",
-          isScrolled ? "bg-white/90 backdrop-blur-md shadow-sm py-4 border-gray-100" : "bg-transparent py-8"
+          isTransparent ? "bg-transparent py-8" : "bg-white/90 backdrop-blur-md shadow-sm py-4 border-gray-100"
         )}
       >
         <div className="container-custom flex items-center">
@@ -60,9 +65,9 @@ const Navbar = () => {
                     "text-[11px] font-black tracking-widest uppercase transition-all duration-300 relative group",
                     pathname === link.href
                       ? "text-accent"
-                      : isScrolled
-                      ? "text-primary hover:text-accent"
-                      : "text-white/90 hover:text-accent"
+                      : isTransparent
+                      ? "text-white/90 hover:text-accent"
+                      : "text-primary hover:text-accent"
                   )}
                 >
                   {link.name}
@@ -77,7 +82,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Toggle */}
           <button
-            className={cn("lg:hidden p-2 flex-1 flex justify-start transition-colors", isScrolled ? "text-primary" : "text-white")}
+            className={cn("lg:hidden p-2 flex-1 flex justify-start transition-colors", isTransparent ? "text-white" : "text-primary")}
             onClick={() => setIsMobileMenuOpen(true)}
           >
             <Menu size={24} />
@@ -87,7 +92,7 @@ const Navbar = () => {
             href="/"
             className={cn(
               "text-3xl font-black tracking-[-0.05em] flex-1 flex justify-center lowercase transition-colors duration-300",
-              isScrolled ? "text-primary" : "text-white"
+              isTransparent ? "text-white" : "text-primary"
             )}
           >
             skylenzo
@@ -96,13 +101,13 @@ const Navbar = () => {
           {/* Icons - Right */}
           <div className="flex items-center justify-end space-x-2 sm:space-x-4 flex-1">
             <button
-              className={cn("p-2 hover:text-accent transition-all duration-300 hover:scale-110", isScrolled ? "text-primary" : "text-white")}
+              className={cn("p-2 hover:text-accent transition-all duration-300 hover:scale-110", isTransparent ? "text-white" : "text-primary")}
               onClick={() => setIsSearchOpen(!isSearchOpen)}
             >
               <Search size={18} strokeWidth={2.5} />
             </button>
 
-            <Link href="/wishlist" className={cn("p-2 hover:text-accent transition-all duration-300 hover:scale-110 relative", isScrolled ? "text-primary" : "text-white")}>
+            <Link href="/wishlist" className={cn("p-2 hover:text-accent transition-all duration-300 hover:scale-110 relative", isTransparent ? "text-white" : "text-primary")}>
               <Heart size={18} strokeWidth={2.5} />
               {wishlist.length > 0 && (
                 <span className="absolute top-1 right-1 bg-accent text-white text-[8px] w-3.5 h-3.5 flex items-center justify-center rounded-full font-black">
@@ -111,7 +116,7 @@ const Navbar = () => {
               )}
             </Link>
 
-            <Link href="/cart" className={cn("p-2 hover:text-accent transition-all duration-300 hover:scale-110 relative", isScrolled ? "text-primary" : "text-white")}>
+            <Link href="/cart" className={cn("p-2 hover:text-accent transition-all duration-300 hover:scale-110 relative", isTransparent ? "text-white" : "text-primary")}>
               <ShoppingCart size={18} strokeWidth={2.5} />
               {cartItemsCount > 0 && (
                 <span className="absolute top-1 right-1 bg-accent text-white text-[8px] w-3.5 h-3.5 flex items-center justify-center rounded-full font-black">
@@ -120,7 +125,7 @@ const Navbar = () => {
               )}
             </Link>
 
-            <Link href="/login" className={cn("hidden sm:block p-2 hover:text-accent transition-all duration-300 hover:scale-110", isScrolled ? "text-primary" : "text-white")}>
+            <Link href="/login" className={cn("hidden sm:block p-2 hover:text-accent transition-all duration-300 hover:scale-110", isTransparent ? "text-white" : "text-primary")}>
               <User size={18} strokeWidth={2.5} />
             </Link>
           </div>

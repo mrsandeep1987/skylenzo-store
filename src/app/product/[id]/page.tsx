@@ -22,6 +22,7 @@ export default function ProductDetailsPage() {
   
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
+  const [activeTab, setActiveTab] = useState<'description' | 'reviews' | 'shipping'>('description');
 
   if (!product) {
     return (
@@ -184,21 +185,133 @@ export default function ProductDetailsPage() {
       {/* Tabs */}
       <div className="mt-24 border-b">
         <div className="flex gap-12">
-          <button className="pb-4 border-b-2 border-primary font-bold">Description</button>
-          <button className="pb-4 border-b-2 border-transparent text-gray-500 hover:text-primary transition-all">Reviews ({product.reviewsCount})</button>
-          <button className="pb-4 border-b-2 border-transparent text-gray-500 hover:text-primary transition-all">Shipping Information</button>
+          <button
+            onClick={() => setActiveTab('description')}
+            className={`pb-4 border-b-2 font-bold transition-all ${
+              activeTab === 'description' ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-primary'
+            }`}
+          >
+            Description
+          </button>
+          <button
+            onClick={() => setActiveTab('reviews')}
+            className={`pb-4 border-b-2 font-bold transition-all ${
+              activeTab === 'reviews' ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-primary'
+            }`}
+          >
+            Reviews ({product.reviewsCount})
+          </button>
+          <button
+            onClick={() => setActiveTab('shipping')}
+            className={`pb-4 border-b-2 font-bold transition-all ${
+              activeTab === 'shipping' ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-primary'
+            }`}
+          >
+            Shipping Information
+          </button>
         </div>
       </div>
-      <div className="py-12 text-gray-600 leading-relaxed max-w-4xl">
-        <p className="mb-6">
-          This premium {product.name} is a testament to our commitment to quality and minimalist design. 
-          Each piece is carefully inspected to ensure it meets our rigorous standards for durability and aesthetic appeal.
-        </p>
-        <p>
-          Materials: Solid Oak Wood, Recycled Aluminum, Eco-friendly Fabrics. <br />
-          Dimensions: 45cm x 45cm x 60cm <br />
-          Weight: 2.5kg
-        </p>
+
+      {/* Tab Content */}
+      <div className="py-12 max-w-4xl">
+        {activeTab === 'description' && (
+          <div className="text-gray-600 leading-relaxed">
+            <p className="mb-6">
+              This premium {product.name} is a testament to our commitment to quality and minimalist design.
+              Each piece is carefully inspected to ensure it meets our rigorous standards for durability and aesthetic appeal.
+            </p>
+            <p>
+              Materials: Solid Oak Wood, Recycled Aluminum, Eco-friendly Fabrics. <br />
+              Dimensions: 45cm x 45cm x 60cm <br />
+              Weight: 2.5kg
+            </p>
+          </div>
+        )}
+
+        {activeTab === 'reviews' && (
+          <div className="space-y-8">
+            <div className="flex items-center gap-6 pb-8 border-b">
+              <div className="text-center">
+                <p className="text-6xl font-black">{product.rating}</p>
+                <div className="flex justify-center text-yellow-400 my-2">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} size={18} fill={i < Math.floor(product.rating) ? 'currentColor' : 'none'} />
+                  ))}
+                </div>
+                <p className="text-sm text-gray-500">{product.reviewsCount} reviews</p>
+              </div>
+              <div className="flex-1 space-y-2">
+                {[5, 4, 3, 2, 1].map((star) => (
+                  <div key={star} className="flex items-center gap-3">
+                    <span className="text-xs font-bold w-2">{star}</span>
+                    <Star size={12} className="text-yellow-400" fill="currentColor" />
+                    <div className="flex-1 bg-gray-100 rounded-full h-2">
+                      <div
+                        className="bg-yellow-400 h-2 rounded-full"
+                        style={{ width: `${star === 5 ? 60 : star === 4 ? 25 : star === 3 ? 10 : star === 2 ? 3 : 2}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Sample Reviews */}
+            {[
+              { name: 'Alexandra S.', rating: 5, date: 'March 2024', comment: 'Absolutely stunning quality. Exactly what my Scandinavian-inspired living room needed. The craftsmanship is impeccable and delivery was fast.' },
+              { name: 'Marcus L.', rating: 5, date: 'February 2024', comment: 'Exceeded my expectations. The minimalist design is perfect and the materials feel premium and sustainable.' },
+              { name: 'Sophie R.', rating: 4, date: 'January 2024', comment: 'Beautiful piece, love the design. Packaging was excellent. Minor delay in shipping but well worth the wait.' },
+            ].map((review, idx) => (
+              <div key={idx} className="pb-8 border-b last:border-0">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <h4 className="font-bold">{review.name}</h4>
+                    <p className="text-xs text-gray-400">{review.date}</p>
+                  </div>
+                  <div className="flex text-yellow-400">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={14} fill={i < review.rating ? 'currentColor' : 'none'} />
+                    ))}
+                  </div>
+                </div>
+                <p className="text-gray-600 text-sm leading-relaxed">{review.comment}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {activeTab === 'shipping' && (
+          <div className="space-y-8 text-gray-600">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="bg-gray-50 rounded-2xl p-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <Truck className="text-accent" size={24} />
+                  <h3 className="font-bold text-lg text-primary">Delivery Options</h3>
+                </div>
+                <ul className="space-y-3 text-sm">
+                  <li className="flex justify-between"><span>Standard (3–5 days)</span><span className="font-bold">Free over $200</span></li>
+                  <li className="flex justify-between"><span>Express (1–2 days)</span><span className="font-bold">$25</span></li>
+                  <li className="flex justify-between"><span>International (7–14 days)</span><span className="font-bold">From $45</span></li>
+                </ul>
+              </div>
+              <div className="bg-gray-50 rounded-2xl p-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <ShieldCheck className="text-accent" size={24} />
+                  <h3 className="font-bold text-lg text-primary">Returns & Warranty</h3>
+                </div>
+                <ul className="space-y-3 text-sm">
+                  <li>✓ 30-day hassle-free returns</li>
+                  <li>✓ 2-year manufacturer warranty</li>
+                  <li>✓ Free return shipping on defective items</li>
+                  <li>✓ Full refund or exchange guaranteed</li>
+                </ul>
+              </div>
+            </div>
+            <p className="text-sm text-gray-400">
+              Orders placed before 2pm (CET) on business days ship the same day. You will receive a tracking number via email once your order ships.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Related Products */}
